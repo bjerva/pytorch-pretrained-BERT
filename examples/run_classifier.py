@@ -438,12 +438,14 @@ def main():
         "cola": ColaProcessor,
         "mnli": MnliProcessor,
         "mrpc": MrpcProcessor,
+        "peer": PeerReadProcessor,
     }
 
     num_labels_task = {
         "cola": 2,
         "mnli": 3,
         "mrpc": 2,
+        "peer": 2,
     }
 
     if args.local_rank == -1 or args.no_cuda:
