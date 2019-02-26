@@ -200,15 +200,15 @@ class ColaProcessor(DataProcessor):
 class PeerReadProcessor(DataProcessor):
     """Processor for the PeerRead data set."""
 
-    def get_train_examples(self, data_dir):
+    def get_train_examples(self, data_dir, years):
         """See base class."""
         return self._create_examples(
-            self.read_json(os.path.join(data_dir, "arxiv.json", "train")), "train")
+            self.read_json(os.path.join(data_dir, "arxiv.json", "train", years)), "train")
 
-    def get_dev_examples(self, data_dir):
+    def get_dev_examples(self, data_dir, years):
         """See base class."""
         return self._create_examples(
-            self.read_json(os.path.join(data_dir, "arxiv.json", "dev")), "dev")
+            self.read_json(os.path.join(data_dir, "arxiv.json", "dev", years)), "dev")
 
     def get_labels(self):
         """See base class."""
@@ -229,7 +229,7 @@ class PeerReadProcessor(DataProcessor):
         with open(path, 'r') as in_f:
             data = json.loads('\n'.join(in_f.readlines()))
 
-        formatted = [(entry['abstract'], entry['accepted']) for entry in data if entry['split'] == split]
+        formatted = [(entry['abstract'], entry['accepted']) for entry in data if entry['split'] == split and int(entry['DATE_OF_SUBMISSION'].split('-')[-1]) in years]
         return formatted
 
 
@@ -425,6 +425,10 @@ def main():
                              "Positive power of 2: static loss scaling value.\n")
     parser.add_argument('--server_ip', type=str, default='', help="Can be used for distant debugging.")
     parser.add_argument('--server_port', type=str, default='', help="Can be used for distant debugging.")
+
+    ## PeerRead
+    parser.add_argument('--train_years', nargs='+', default=[2012])
+    parser.add_argument('--test_years', nargs='+', default=[2013])
     args = parser.parse_args()
 
     if args.server_ip and args.server_port:
