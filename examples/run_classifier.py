@@ -212,7 +212,7 @@ class PeerReadProcessor(DataProcessor):
 
     def get_labels(self):
         """See base class."""
-        return ["0", "1"]
+        return [False, True]
 
     def _create_examples(self, lines, set_type):
         """Creates examples for the training and dev sets."""
@@ -227,7 +227,7 @@ class PeerReadProcessor(DataProcessor):
 
     def read_json(self, path):
         with open(path, 'r') as in_f:
-            data = json.loads(path)
+            data = json.loads('\n'.join(in_f.readlines()))
 
         formatted = [(entry['abstract'], entry['accepted']) for entry in data]
         return formatted
