@@ -203,12 +203,12 @@ class PeerReadProcessor(DataProcessor):
     def get_train_examples(self, data_dir):
         """See base class."""
         return self._create_examples(
-            self.read_json(os.path.join(data_dir, "arxiv.json")), "train")
+            self.read_json(os.path.join(data_dir, "arxiv.json", "train")), "train")
 
     def get_dev_examples(self, data_dir):
         """See base class."""
         return self._create_examples(
-            self.read_json(os.path.join(data_dir, "arxiv.json")), "dev")
+            self.read_json(os.path.join(data_dir, "arxiv.json", "dev")), "dev")
 
     def get_labels(self):
         """See base class."""
@@ -225,11 +225,11 @@ class PeerReadProcessor(DataProcessor):
                 InputExample(guid=guid, text_a=text_a, text_b=None, label=label))
         return examples
 
-    def read_json(self, path):
+    def read_json(self, path, split):
         with open(path, 'r') as in_f:
             data = json.loads('\n'.join(in_f.readlines()))
 
-        formatted = [(entry['abstract'], entry['accepted']) for entry in data]
+        formatted = [(entry['abstract'], entry['accepted']) for entry in data if entry['split'] == split]
         return formatted
 
 
